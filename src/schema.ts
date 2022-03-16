@@ -27,6 +27,9 @@ type ProductInformation = {
  * @title Example schema
  */
 export type Schema = {
-  products: ProductInformation;
-  productsFromQuery:  ProductInformation;
+  products: ProductInformation[];
+  backgroundMedia:  string; // only url for now, will refactor.
+  backgroundColor: string;
+  callingToActionText: string;
+  // productsFromQuery:  ProductInformation;
 }

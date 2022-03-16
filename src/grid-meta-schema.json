@@ -1,0 +1,12 @@
+{
+  "objectFieldTemplate": "main-section",
+  "app": {
+    "objectFieldTemplate": "accordion",
+    "products": {
+        "ui:field": "productsPicker"
+    },
+    "productsFromQuery": {
+      "ui:field": "productsQuery"
+    }
+  }
+}

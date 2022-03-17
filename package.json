@@ -33,6 +33,8 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@ombori/ga-messaging": "^2.90.2",
     "@ombori/ga-settings": "^2.170.1",
     "@ombori/grid-products": "^2.183.0",

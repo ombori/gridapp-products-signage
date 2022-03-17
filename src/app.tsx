@@ -445,6 +445,7 @@ const Picture = styled.img<{ src: string }>`
 
 // Price
 const PriceContainer = styled.section`
+  z-index: 8;
   display: block;
   padding: 40px;
   background: #fff;

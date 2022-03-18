@@ -32,10 +32,8 @@ type ProductInformation = {
  * @title Example schema
  */
 export type Schema = {
-  app: {
-    products: { product: ProductInformation }[];
-    background: Media;
-    backgroundColor: string;
-    callingToActionText: string;
-  };
+  products: { product: ProductInformation }[];
+  background: Media;
+  backgroundColor: string;
+  callingToActionText: string;
 };

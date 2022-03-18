@@ -1,6 +1,7 @@
 import React from 'react';
 // import { getInstance as gs } from '@ombori/grid-signals-react';
-import styled from 'styled-components';
+import styled from '@emotion/styled';
+import { css, keyframes } from '@emotion/react';
 import { useHeartbeat } from '@ombori/ga-messaging';
 
 import { Schema as Settings } from './schema';
@@ -354,30 +355,166 @@ function App() {
   console.log(callingToActionText, backgroundMedia, backgroundColor);
   return (
     <Container>
-      <Picture src={firstPicture} />
-      <Price>{firstPriceStand}</Price>
-      <Price>{firstPriceStand}</Price>
-      <Price>{firstPricePromo}</Price>
+      <Picture src="https://www.freeiconspng.com/uploads/iphone-x-and-iphone-8-png-12.png" />
+      <PriceContainer>
+        <PromoPrice color="red">799:-</PromoPrice>
+        <Price>999:-</Price>
+      </PriceContainer>
+      <Text>
+        Automatisk luftrenare
+        <br /> Renar upp till 119 m3/h. Art. 47007
+      </Text>
+      {/* <Price>{firstPriceStand}</Price>
+      <Price>{firstPricePromo}</Price> */}
+      <BackgroundMedia src="https://source.unsplash.com/random" />
     </Container>
   );
 }
 
-const Container = styled.div`
-  text-align: center;
-  background-color: #282c34;
-  height: 100%;
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  color: white;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 1.5vmin);
+// Animations
+// From Top
+const fromTop = keyframes`
+  from {
+    transform: translate(0, -100%);
+  }
+  to {
+    transform: translate(0, 0);
+  }
 `;
 
-const Picture = styled.img<{ src: string }>``;
+// From Left
+const fromLeft = keyframes`
+  from {
+    transform: translate(200%, 0);
+    filter: blur(24px);
+  }
+  to {
+    filter: blur(0px);
+    transform: translate(0, 0);
+  }
+`;
 
-const Price = styled.span``;
+// Fade in
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+// Pop in
+const popIn = keyframes`
+  from {
+    transform: scale(0) translate(-100%, 100%) rotate(0deg);
+  }
+  to {
+    transform: scale(1) translate(-50%, 0) rotate(1deg);
+  }
+`;
+
+// Rotate
+const rotate = keyframes`
+  from {
+    transform: translate(-50%,0) rotate(1deg);
+  }
+  50% {
+    transform: translate(-50%,0) rotate(8deg);
+  }
+`;
+
+// MARKUP STYLES
+
+// CTA / text
+const Text = styled.section`
+  padding: 8vmin;
+  animation-name: ${fadeIn};
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+  animation-delay: 0.5s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+`;
+
+// Main picture
+const Picture = styled.img<{ src: string }>`
+  width: auto;
+  position: absolute;
+  z-index: 2;
+  top: 80px;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  left: 50%;
+  transform: translate(-50%, 0) rotate(1deg);
+  filter: drop-shadow(8px 8px 24px rgba(0, 0, 0, 0.24));
+  animation-name: ${popIn}, ${rotate};
+  animation-duration: 1s, 16s;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: backwards, forwards;
+  animation-delay: 0s, 1.5s;
+`;
+
+// Price
+const PriceContainer = styled.section`
+  z-index: 8;
+  display: block;
+  padding: 40px;
+  background: #fff;
+  margin: 0 auto;
+  text-align: left;
+  font-weight: bold;
+  animation-name: ${fromLeft};
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-delay: 0.5s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+`;
+const Price = styled.span`
+  display: block;
+  text-decoration: line-through;
+  font-size: calc(16px + 6vmin);
+`;
+const PromoPrice = styled(Price)`
+  font-size: calc(16px + 16vmin);
+  text-decoration: none;
+  color: ${(props) => (props.color ? props.color : '#000')};
+`;
+
+// Backgrounds
+const BackgroundMedia = styled.img`
+  z-index: 0;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: -25%;
+  width: 150%;
+  height: 50vh;
+  border-radius: 0 0 50% 50%;
+  background: #555;
+  object-fit: cover;
+  animation-name: ${fromTop};
+  animation-duration: 1.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+`;
+
+const Container = styled.div`
+  text-align: center;
+  background-color: #eee;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  font-size: calc(16px + 4vmin);
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+`;
 
 export default App;

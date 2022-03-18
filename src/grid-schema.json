@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Product signage",
+    "properties": {
+        "app": {
+            "type": "object",
+            "title": "Application",
+            "properties": {
+                "products":{
+                    "type": "array",
+                    "title": "Products",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "product": {
+                                "type": "object",
+                                "title": "Product"
+                            }
+                        }
+                    }
+                },
+                "callToAction": {
+                    "type": "string",
+                    "title": "Call to action text",
+                    "default": ""
+                },
+                "background" : {
+                    "type": "object",
+                    "title": "Background image",
+                    "properties": {
+                        "media": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "backgroundColor": {
+                    "type": "string",
+                    "title": "Background color",
+                    "default": "#ffffff"
+                },
+                "globalStyles": {
+                    "type": "string",
+                    "title": "Custom styles"
+                }
+            },
+            "required": [
+                "products",
+                "callToAction",
+                "background",
+                "backgroundColor"
+            ]
+        }
+    },
+    "required": [
+        "app"
+    ]
+}

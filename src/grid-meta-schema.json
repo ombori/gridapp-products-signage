@@ -1,12 +1,21 @@
 {
-  "objectFieldTemplate": "main-section",
   "app": {
     "objectFieldTemplate": "accordion",
-    "product": {
-        "ui:field": "productPicker"
+    "products": {
+      "items": {
+        "product": {
+          "ui:field": "productPicker"
+        }
+      }
     },
-    "productsFromQuery": {
-      "ui:field": "productsQuery"
+    "background": {
+      "ui:field": "mediaPicker"
+    },
+    "backgroundColor": {
+      "ui:widget": "color"
+    },
+    "globalStyles": {
+      "ui:widget": "css"
     }
   }
 }

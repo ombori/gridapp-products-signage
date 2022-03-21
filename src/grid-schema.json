@@ -48,7 +48,6 @@
             },
             "required": [
                 "products",
-                "callToAction",
                 "background",
                 "backgroundColor"
             ]

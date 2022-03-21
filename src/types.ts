@@ -31,7 +31,7 @@ type ProductInformation = {
 /**
  * @title Example schema
  */
-export type Schema = {
+export type Types = {
   products: { product: ProductInformation }[];
   background: Media;
   backgroundColor: string;

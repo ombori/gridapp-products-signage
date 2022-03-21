@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import { useHeartbeat } from '@ombori/ga-messaging';
 
-import { Schema as Settings } from './schema';
+import { Types as Settings } from './types';
 import {
   PriceListTypeEnum,
 } from '@ombori/grid-products/dist';

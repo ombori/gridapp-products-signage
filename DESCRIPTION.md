@@ -1,18 +1,11 @@
-# New Application Name #
-by New Developer
+# Product signage #
+by Ombori
 
-A short description will be displayed in application list.
+The app which will Product. present prices (standard and promotional if it's provided), image, description and test for action.
 
-![These are screenshots for your app](meta/screen1.png) 
-![Just update the png files](meta/screen2.png) 
-![And you're good to go](meta/screen3.png)
-
-This is a full description. All content starting from here will be displayed at the information section on app page. Markdown syntax is supported: [link](http://google.com)
+![screenshots](meta/a_test_product.png) 
 
 Description file is not always published with the app. To publish the description run `omg app upload-description <app name>` or `yarn upload-description`.
-
-## Headers:
-- lists
-- are
-- also
-- supported
+Can be used as an example. Might be extended with:
+1. List of a few products
+2. Animations

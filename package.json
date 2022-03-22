@@ -1,6 +1,6 @@
 {
   "name": "myorg.gridapp-products-signage",
-  "version": "0.1.2",
+  "version": "0.1.7",
   "private": true,
   "homepage": "./",
   "scripts": {
@@ -13,7 +13,7 @@
     "settings": "omg app settings",
     "upload-description": "omg app upload-description",
     "connect": "omg dev ws",
-    "test-publish": "yarn build && omg app publish ombori-test.products-signage",
+    "test-publish": "yarn build && omg app publish ombori-studio.products-signage",
     "prod-publish": "yarn prodbuild && omg app publish ombori.products-signage"
   },
   "eslintConfig": {

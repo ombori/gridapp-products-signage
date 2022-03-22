@@ -1,9 +1,9 @@
 # Product signage #
 by Ombori
 
-The app which will Product. present prices (standard and promotional if it's provided), image, description and test for action.
+The app which will Product. present prices (standard and promotional if it's provided), image, description and text for action.
 
-![screenshots](meta/a_test_product.png) 
+![screenshots||300](meta/a_test_product.png) 
 
 Description file is not always published with the app. To publish the description run `omg app upload-description <app name>` or `yarn upload-description`.
 Can be used as an example. Might be extended with:

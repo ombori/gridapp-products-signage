@@ -5,9 +5,7 @@ import { keyframes } from '@emotion/react';
 import { useHeartbeat } from '@ombori/ga-messaging';
 
 import { Types as Settings } from './types';
-import {
-  PriceListTypeEnum,
-} from '@ombori/grid-products/dist';
+import { PriceListTypeEnum } from '@ombori/grid-products/dist';
 import { useSettings } from '@ombori/ga-settings/dist';
 import { ProductDescription } from '@ombori/grid-products/src/types/grid-product';
 
@@ -30,10 +28,11 @@ function App() {
   useHeartbeat();
   const settings = useSettings<Settings>();
 
-  // const callingToActionText = settings?.callingToActionText;
-  const backgroundMedia = settings?.background;
-  // const backgroundColor = settings?.backgroundColor;
-  const products = settings?.products;
+  const callingToActionText = settings?.app.callingToActionText;
+  const backgroundMedia = settings?.app.background;
+  const backgroundColor = settings?.app.backgroundColor;
+  const products = settings?.app.products;
+
   const firstProductSpecification = products && products[0];
 
   const firstProduct =
@@ -76,6 +75,7 @@ function App() {
     );
   }, [firstPricePromo, firstPriceStand]);
 
+  // you can add more analytics events
   // useEffect(() => {
   //   if (firstProduct) {
   //     gs().sendContentView({ title: firstProduct.productGroupId });
@@ -87,12 +87,17 @@ function App() {
   }
 
   return (
-    <Container>
+    <Container color={backgroundColor}>
       <Picture src={firstPicture} />
       {PriceSection}
       <Text>
-        <div dangerouslySetInnerHTML={{__html: firstProductDescription.replace(/(<? *script)/gi, 'illegalscript')}} />
+        <div
+          dangerouslySetInnerHTML={{
+            __html: firstProductDescription.replace(/(<? *script)/gi, 'illegalscript'),
+          }}
+        />
       </Text>
+      <CallToActionText>{callingToActionText}</CallToActionText>
       <BackgroundMedia src={backgroundMedia?.url} />
     </Container>
   );
@@ -163,6 +168,9 @@ const Text = styled.section`
   animation-timing-function: ease;
   animation-fill-mode: backwards;
 `;
+const CallToActionText = styled.span`
+  margin-bottom: 10px;
+`;
 
 // Main picture
 const Picture = styled.img<{ src: string }>`
@@ -228,9 +236,9 @@ const BackgroundMedia = styled.img`
   animation-timing-function: ease;
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ color?: string }>`
   text-align: center;
-  background-color: #eee;
+  background-color: ${(props) => (props.color ? props.color : '#eee')};
   width: 100vw;
   height: 100vh;
   display: flex;

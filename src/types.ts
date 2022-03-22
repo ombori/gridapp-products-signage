@@ -36,6 +36,6 @@ export type Types = {
     products: { product: ProductInformation }[];
     background: Media;
     backgroundColor: string;
-    callingToActionText: string;
+    callToAction: string;
   };
 };

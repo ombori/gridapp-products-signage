@@ -28,7 +28,7 @@ function App() {
   useHeartbeat();
   const settings = useSettings<Settings>();
 
-  const callingToActionText = settings?.app.callingToActionText;
+  const callingToActionText = settings?.app.callToAction;
   const backgroundMedia = settings?.app.background;
   const backgroundColor = settings?.app.backgroundColor;
   const products = settings?.app.products;

@@ -21,10 +21,10 @@ type GridProductWithMedia = Omit<GridProduct, 'catalogPageLocationProduct'> & {
 };
 
 type ProductInformation = {
-  productsGroupsIdsBoot: string[];
-  productsIds: string[];
+  productGroupId: string;
+  productId: string;
   products: GridProductWithMedia[];
-  productsFetchURLBoot: string;
+  productSourceURL: string;
   ref: 'grid-product';
 };
 

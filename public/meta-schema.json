@@ -3,6 +3,9 @@
     "objectFieldTemplate": "accordion",
     "products": {
       "items": {
+        "media": {
+          "ui:field": "mediaPicker"
+        },
         "product": {
           "ui:field": "productPicker"
         }

@@ -35,45 +35,43 @@ function App() {
 
   const firstProductSpecification = products && products[0];
 
-  const firstProduct =
+  const product =
     firstProductSpecification && firstProductSpecification?.product.products[0]
       ? firstProductSpecification?.product.products[0]
       : null;
-  const firstPictureInfo = (
-    firstProduct ?? { catalogPageLocationProduct: [] }
+  const pictureInfo = (
+    product ?? { catalogPageLocationProduct: [] }
   ).catalogPageLocationProduct.find((media) => {
     return media.catalogType.startsWith('image/');
   });
-  const firstPicture = firstPictureInfo ? firstPictureInfo.url : 'no-image';
-  const firstProductDescription = tryGetLocalDescription(
-    firstProduct?.productDescription,
-  );
-  const firstPriceStand =
-    firstProduct &&
-    firstProduct.productPriceList.find(
+  const firstPicture = pictureInfo ? pictureInfo.url : 'no-image';
+  const firstProductDescription = tryGetLocalDescription(product?.productDescription);
+  const priceStandard =
+    product &&
+    product.productPriceList.find(
       (priceInfo) => priceInfo.priceListType === PriceListTypeEnum.Standard,
     )?.listPrice;
-  const firstPricePromo =
-    firstProduct &&
-    firstProduct.productPriceList.find(
+  const pricePromo =
+    product &&
+    product.productPriceList.find(
       (priceInfo) => priceInfo.priceListType === PriceListTypeEnum.Promotional,
     )?.listPrice;
 
   const PriceSection = useMemo(() => {
-    if (firstPricePromo != null) {
+    if (pricePromo != null) {
       return (
         <PriceContainer>
-          <PromoPrice color="red">{firstPricePromo}:-</PromoPrice>
-          <Price>{firstPriceStand}:-</Price>
+          <PromoPrice color="red">{pricePromo}:-</PromoPrice>
+          <Price>{priceStandard}:-</Price>
         </PriceContainer>
       );
     }
     return (
       <PriceContainer>
-        <PromoPrice color="red">{firstPriceStand}:-</PromoPrice>
+        <PromoPrice color="red">{priceStandard}:-</PromoPrice>
       </PriceContainer>
     );
-  }, [firstPricePromo, firstPriceStand]);
+  }, [pricePromo, priceStandard]);
 
   // you can add more analytics events
   // useEffect(() => {
@@ -93,7 +91,7 @@ function App() {
       <Text>
         <div
           dangerouslySetInnerHTML={{
-            __html: firstProductDescription.replace(/(<? *script)/gi, 'illegalscript'),
+            __html: firstProductDescription.replace(/(<? *script)/gi, 'sscript'),
           }}
         />
       </Text>

@@ -14,7 +14,7 @@
                 "animationDuration": {
                     "type": "number",
                     "title": "Animation duration (total, minimum is 2000 ms)",
-                    "default": "7000"
+                    "default": 7000
                 },
                 "callToAction": {
                     "type": "string",

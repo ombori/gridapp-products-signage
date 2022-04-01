@@ -1,15 +1,8 @@
 {
   "app": {
     "objectFieldTemplate": "accordion",
-    "products": {
-      "items": {
-        "media": {
-          "ui:field": "mediaPicker"
-        },
-        "product": {
-          "ui:field": "productPicker"
-        }
-      }
+    "product": {
+      "ui:field": "productPicker"
     },
     "background": {
       "ui:field": "mediaPicker"

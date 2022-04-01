@@ -41,9 +41,10 @@
                 }
             },
             "required": [
-                "products",
+                "product",
                 "background",
-                "backgroundColor"
+                "backgroundColor",
+                "animationDuration"
             ]
         }
     },

@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import { useHeartbeat } from '@ombori/ga-messaging';
 
-import { Types as Settings } from './types';
+import { MediaItem, ProductItem, Types as Settings } from './types';
 import { PriceListTypeEnum } from '@ombori/grid-products/dist';
 import { useSettings } from '@ombori/ga-settings/dist';
 import { ProductDescription } from '@ombori/grid-products/src/types/grid-product';
@@ -31,21 +31,32 @@ function App() {
   const callingToActionText = settings?.app.callToAction;
   const backgroundMedia = settings?.app.background;
   const backgroundColor = settings?.app.backgroundColor;
-  const products = settings?.app.products;
+  const products = settings?.app.products ?? [];
+  const animationDurationRaw = settings?.app.animationDuration;
+  const animationDuration =
+    animationDurationRaw != null && animationDurationRaw > 2000
+      ? animationDurationRaw / 1000
+      : 2;
 
-  const firstProductSpecification = products && products[0];
+  const productSpecification =
+    products &&
+    (products.find((item) => item?.type === 'PRODUCT') as ProductItem | undefined);
+
+  const media =
+    products &&
+    (products.find((item) => item?.type === 'MEDIA') as MediaItem | undefined);
 
   const product =
-    firstProductSpecification && firstProductSpecification?.product.products[0]
-      ? firstProductSpecification?.product.products[0]
+    productSpecification && productSpecification?.product.products[0]
+      ? productSpecification?.product.products[0]
       : null;
   const pictureInfo = (
     product ?? { catalogPageLocationProduct: [] }
   ).catalogPageLocationProduct.find((media) => {
     return media.catalogType.startsWith('image/');
   });
-  const firstPicture = pictureInfo ? pictureInfo.url : 'no-image';
-  const firstProductDescription = tryGetLocalDescription(product?.productDescription);
+  const productPicture = pictureInfo ? pictureInfo.url : null;
+  const productDescription = tryGetLocalDescription(product?.productDescription);
   const priceStandard =
     product &&
     product.productPriceList.find(
@@ -66,6 +77,9 @@ function App() {
         </PriceContainer>
       );
     }
+    if (!priceStandard) {
+      return null;
+    }
     return (
       <PriceContainer>
         <PromoPrice color="red">{priceStandard}:-</PromoPrice>
@@ -81,17 +95,20 @@ function App() {
   // }, [firstProduct]);
 
   if (!settings) {
-    return <Container>Loading gridapp settings...</Container>;
+    return <Container animationDuration={8000}>Loading gridapp settings...</Container>;
   }
 
   return (
-    <Container color={backgroundColor}>
-      <Picture src={firstPicture} />
+    <Container color={backgroundColor} animationDuration={animationDuration}>
+      <Picture
+        src={productPicture ?? media?.media.url ?? 'no-pic'}
+        animationDuration={animationDuration}
+      />
       {PriceSection}
       <Text>
         <div
           dangerouslySetInnerHTML={{
-            __html: firstProductDescription.replace(/(<? *script)/gi, 'sscript'),
+            __html: productDescription.replace(/(<? *script)/gi, 'sscript'),
           }}
         />
       </Text>
@@ -134,6 +151,15 @@ const fadeIn = keyframes`
   }
 `;
 
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
 // Pop in
 const popIn = keyframes`
   from {
@@ -171,7 +197,7 @@ const CallToActionText = styled.span`
 `;
 
 // Main picture
-const Picture = styled.img<{ src: string }>`
+const Picture = styled.img<{ src: string; animationDuration: number }>`
   width: auto;
   position: absolute;
   z-index: 2;
@@ -182,11 +208,11 @@ const Picture = styled.img<{ src: string }>`
   left: 50%;
   transform: translate(-50%, 0) rotate(1deg);
   filter: drop-shadow(8px 8px 24px rgba(0, 0, 0, 0.24));
-  animation-name: ${popIn}, ${rotate};
-  animation-duration: 1s, 16s;
-  animation-iteration-count: 1, infinite;
-  animation-fill-mode: backwards, forwards;
-  animation-delay: 0s, 1.5s;
+  animation-name: ${popIn}, ${rotate}, ${fadeOut};
+  animation-duration: 2s, ${(props) => props.animationDuration - 1.5}, 1s;
+  animation-iteration-count: 1, infinite, 1;
+  animation-fill-mode: backwards, forwards, forwards;
+  animation-delay: 0s, 1.5s, ${(props) => props.animationDuration - 1.5}s;
 `;
 
 // Price
@@ -205,11 +231,13 @@ const PriceContainer = styled.section`
   animation-timing-function: ease;
   animation-fill-mode: backwards;
 `;
+
 const Price = styled.span`
   display: block;
   text-decoration: line-through;
   font-size: calc(16px + 6vmin);
 `;
+
 const PromoPrice = styled(Price)`
   font-size: calc(16px + 16vmin);
   text-decoration: none;
@@ -234,7 +262,7 @@ const BackgroundMedia = styled.img`
   animation-timing-function: ease;
 `;
 
-const Container = styled.div<{ color?: string }>`
+const Container = styled.div<{ color?: string; animationDuration: number }>`
   text-align: center;
   background-color: ${(props) => (props.color ? props.color : '#eee')};
   width: 100vw;
@@ -248,6 +276,11 @@ const Container = styled.div<{ color?: string }>`
   position: fixed;
   top: 0;
   left: 0;
+  animation-name: ${fadeIn}, ${fadeOut};
+  animation-duration: 1s, 0.5s;
+  animation-iteration-count: 1, 1;
+  animation-fill-mode: forwards, forwards;
+  animation-delay: 0s, ${(props) => props.animationDuration - 1.5}s;
 `;
 
 export default App;

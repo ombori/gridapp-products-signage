@@ -5,6 +5,8 @@
     "definitions": {
         "playlist": {
             "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
             "items": {
                 "type": "object",
                 "properties": {
@@ -160,6 +162,11 @@
                     "minItems": 1,
                     "title": "Products media",
                     "$ref": "#/definitions/playlist"
+                },
+                "animationDuration": {
+                    "type": "number",
+                    "title": "Animation duration (total, minimum is 2000 ms)",
+                    "default": "70000"
                 },
                 "callToAction": {
                     "type": "string",

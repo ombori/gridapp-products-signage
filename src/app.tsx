@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 import { useHeartbeat } from '@ombori/ga-messaging';
 
-import { MediaItem, ProductItem, Types as Settings } from './types';
+import { Types as Settings } from './types';
 import { PriceListTypeEnum } from '@ombori/grid-products/dist';
 import { useSettings } from '@ombori/ga-settings/dist';
 import { ProductDescription } from '@ombori/grid-products/src/types/grid-product';
@@ -31,31 +31,38 @@ function App() {
   const callingToActionText = settings?.app.callToAction;
   const backgroundMedia = settings?.app.background;
   const backgroundColor = settings?.app.backgroundColor;
-  const products = settings?.app.products ?? [];
+  const productSpecification = settings?.app.product;
   const animationDurationRaw = settings?.app.animationDuration;
   const animationDuration =
     animationDurationRaw != null && animationDurationRaw > 2000
       ? animationDurationRaw / 1000
       : 2;
 
-  const productSpecification =
-    products &&
-    (products.find((item) => item?.type === 'PRODUCT') as ProductItem | undefined);
-
-  const media =
-    products &&
-    (products.find((item) => item?.type === 'MEDIA') as MediaItem | undefined);
-
   const product =
-    productSpecification && productSpecification?.product.products[0]
-      ? productSpecification?.product.products[0]
+    productSpecification && productSpecification?.products[0]
+      ? productSpecification?.products[0]
       : null;
   const pictureInfo = (
     product ?? { catalogPageLocationProduct: [] }
   ).catalogPageLocationProduct.find((media) => {
     return media.catalogType.startsWith('image/');
   });
-  const productPicture = pictureInfo ? pictureInfo.url : null;
+
+  const getProductPictureURL = () => {
+    if (!pictureInfo) {
+      return 'no-picture';
+    }
+    if (pictureInfo.url) {
+      return pictureInfo.url;
+    }
+    if (pictureInfo.catalogPageLocationProduct) {
+      return pictureInfo.catalogPageLocationProduct;
+    }
+    return 'no-picture';
+  };
+
+  const productPicture = getProductPictureURL();
+
   const productDescription = tryGetLocalDescription(product?.productDescription);
   const priceStandard =
     product &&
@@ -100,10 +107,7 @@ function App() {
 
   return (
     <Container color={backgroundColor} animationDuration={animationDuration}>
-      <Picture
-        src={productPicture ?? media?.media.url ?? 'no-pic'}
-        animationDuration={animationDuration}
-      />
+      <Picture src={productPicture} animationDuration={animationDuration} />
       {PriceSection}
       <Text>
         <div

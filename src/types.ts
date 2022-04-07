@@ -37,7 +37,7 @@ export type Types = {
     background: Media;
     backgroundColor: string;
     callToAction: string;
-    animationType: 'fade' | 'move';
+    animationType: 'fade' | 'move' | 'popin';
     animationDuration: number;
   };
 };

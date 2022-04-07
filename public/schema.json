@@ -19,7 +19,7 @@
         "animationType": {
           "type": "string",
           "title": "Animation duration (total, minimum is 2000 ms)",
-          "enum": ["fade", "move"],
+          "enum": ["fade", "move", "popin"],
           "default": "fade"
         },
         "callToAction": {

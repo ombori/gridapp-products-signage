@@ -27,6 +27,8 @@ const tryGetLocalDescription = (descriptions?: ProductDescription[]) => {
 
 const animationTransitionDuration = 1.5;
 
+type AnimationT = typeof fadeIn;
+
 function App() {
   useHeartbeat();
   const settings = useSettings<Settings>();
@@ -40,7 +42,7 @@ function App() {
   const animationDuration =
     animationDurationRaw != null && animationDurationRaw > 2000
       ? animationDurationRaw / 1000
-      : 2;
+      : 10;
 
   const product =
     productSpecification && productSpecification?.products[0]
@@ -98,13 +100,27 @@ function App() {
     );
   }, [pricePromo, priceStandard]);
 
-  const animationName = useMemo(() => {
+  const animations = useMemo((): {
+    animationIn: AnimationT;
+    animationOut: AnimationT;
+  } => {
     switch (animationType) {
-      case "fade":
-      default
-        return;
-      case "move":
-        return;
+      case 'fade':
+      default:
+        return {
+          animationIn: fadeIn,
+          animationOut: fadeOut,
+        };
+      case 'move':
+        return {
+          animationIn: fromLeft,
+          animationOut: toRight,
+        };
+      case 'popin':
+        return {
+          animationIn: popIn,
+          animationOut: fadeOut,
+        };
     }
   }, [animationType]);
 
@@ -116,15 +132,33 @@ function App() {
   // }, [productPicture]);
 
   if (!settings) {
-    return <Container animationDuration={8000}>Loading gridapp settings...</Container>;
+    return (
+      <Container
+        animationDuration={8000}
+        animationIn={animations.animationIn}
+        animationOut={animations.animationOut}
+      >
+        Loading gridapp settings...
+      </Container>
+    );
   }
 
   return (
     <ErrorBoundary>
-      <Container color={backgroundColor} animationDuration={animationDuration}>
-        <Picture src={productPicture} animationDuration={animationDuration} />
+      <Container
+        color={backgroundColor}
+        animationDuration={animationDuration}
+        animationIn={animations.animationIn}
+        animationOut={animations.animationOut}
+      >
+        <Picture
+          src={productPicture}
+          animationDuration={animationDuration}
+          animationIn={animations.animationIn}
+          animationOut={animations.animationOut}
+        />
         {PriceSection}
-        <Text>
+        <Text animationIn={fromLeft}>
           <div
             dangerouslySetInnerHTML={{
               __html: productDescription.replace(/(<? *script)/gi, 'sscript'),
@@ -161,6 +195,17 @@ const fromLeft = keyframes`
   }
 `;
 
+const toRight = keyframes`
+  from {
+    transform: translate(0, 0);
+    filter: blur(0px);
+  }
+  to {
+    filter: blur(24px);
+    transform: translate(-200%, 0);
+  }
+`;
+
 // Fade in
 const fadeIn = keyframes`
   from {
@@ -183,10 +228,10 @@ const fadeOut = keyframes`
 // Pop in
 const popIn = keyframes`
   from {
-    transform: scale(0) translate(-100%, 100%) rotate(0deg);
+    transform: scale(0) translate(-200%, 200%);
   }
   to {
-    transform: scale(1) translate(-50%, 0) rotate(1deg);
+    transform: scale(1) translate(0, 0);
   }
 `;
 
@@ -195,18 +240,24 @@ const rotate = keyframes`
   from {
     transform: translate(-50%,0) rotate(1deg);
   }
-  50% {
-    transform: translate(-50%,0) rotate(8deg);
+  30% {
+    transform: translate(-50%,0) rotate(6deg);
+  }
+  80% {
+    transform: translate(-50%,0) rotate(-2deg);
+  }
+  100% {
+    transform: translate(-50%,0) rotate(0deg);
   }
 `;
 
 // MARKUP STYLES
 
 // CTA / text
-const Text = styled.section<{ animationName: any; }>`
+const Text = styled.section<{ animationIn: AnimationT }>`
   padding: 8vmin;
-  animation-name: ${fadeIn};
-  animation-duration: 2s;
+  animation-name: ${(props) => props.animationIn};
+  animation-duration: 1s;
   animation-iteration-count: 1;
   animation-delay: 0.5s;
   animation-timing-function: ease;
@@ -225,7 +276,12 @@ const CallToActionText = styled.span`
 `;
 
 // Main picture
-const Picture = styled.img<{ src: string; animationDuration: number }>`
+const Picture = styled.img<{
+  src: string;
+  animationDuration: number;
+  animationIn: AnimationT;
+  animationOut: AnimationT;
+}>`
   width: auto;
   position: absolute;
   z-index: 2;
@@ -236,12 +292,13 @@ const Picture = styled.img<{ src: string; animationDuration: number }>`
   left: 50%;
   transform: translate(-50%, 0) rotate(1deg);
   filter: drop-shadow(8px 8px 24px rgba(0, 0, 0, 0.24));
-  animation-name: ${popIn}, ${rotate}, ${fadeOut};
+  animation-name: ${(props) => props.animationIn}, ${rotate},
+    ${(props) => props.animationOut};
   animation-duration: 2s,
-    ${(props) => props.animationDuration - animationTransitionDuration}, 1s;
+    ${(props) => props.animationDuration - animationTransitionDuration}s, 1s;
   animation-iteration-count: 1, infinite, 1;
   animation-fill-mode: backwards, forwards, forwards;
-  animation-delay: 0s, ${animationTransitionDuration}s,
+  animation-delay: 0s, 0s,
     ${(props) => props.animationDuration - animationTransitionDuration}s;
 `;
 
@@ -292,7 +349,12 @@ const BackgroundMedia = styled.img`
   animation-timing-function: ease;
 `;
 
-const Container = styled.div<{ color?: string; animationDuration: number }>`
+const Container = styled.div<{
+  color?: string;
+  animationDuration: number;
+  animationIn: AnimationT;
+  animationOut: AnimationT;
+}>`
   text-align: center;
   background-color: ${(props) => (props.color ? props.color : '#eee')};
   width: 100vw;
@@ -306,7 +368,7 @@ const Container = styled.div<{ color?: string; animationDuration: number }>`
   position: fixed;
   top: 0;
   left: 0;
-  animation-name: ${fadeIn}, ${fadeOut};
+  animation-name: ${(props) => props.animationIn}, ${(props) => props.animationOut};
   animation-duration: 1s, 0.5s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;

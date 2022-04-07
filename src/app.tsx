@@ -8,6 +8,7 @@ import { Types as Settings } from './types';
 import { PriceListTypeEnum } from '@ombori/grid-products/dist';
 import { useSettings } from '@ombori/ga-settings/dist';
 import { ProductDescription } from '@ombori/grid-products/src/types/grid-product';
+import ErrorBoundary from './error-boundary';
 
 const tryGetLocalDescription = (descriptions?: ProductDescription[]) => {
   if (!descriptions || descriptions.length === 0) {
@@ -24,6 +25,8 @@ const tryGetLocalDescription = (descriptions?: ProductDescription[]) => {
   return descriptions[0].productDescription;
 };
 
+const animationTransitionDuration = 1.5;
+
 function App() {
   useHeartbeat();
   const settings = useSettings<Settings>();
@@ -33,6 +36,7 @@ function App() {
   const backgroundColor = settings?.app.backgroundColor;
   const productSpecification = settings?.app.product;
   const animationDurationRaw = settings?.app.animationDuration;
+  const animationType = settings?.app.animationType;
   const animationDuration =
     animationDurationRaw != null && animationDurationRaw > 2000
       ? animationDurationRaw / 1000
@@ -94,31 +98,43 @@ function App() {
     );
   }, [pricePromo, priceStandard]);
 
-  // you can add more analytics events
+  const animationName = useMemo(() => {
+    switch (animationType) {
+      case "fade":
+      default
+        return;
+      case "move":
+        return;
+    }
+  }, [animationType]);
+
+  // you can add more analytics events here. Please ask for documentation of standard supported events types
   // useEffect(() => {
-  //   if (firstProduct) {
-  //     gs().sendContentView({ title: firstProduct.productGroupId });
+  //   if (productPicture) {
+  //     gs().sendContentView({ title: productPicture });
   //   }
-  // }, [firstProduct]);
+  // }, [productPicture]);
 
   if (!settings) {
     return <Container animationDuration={8000}>Loading gridapp settings...</Container>;
   }
 
   return (
-    <Container color={backgroundColor} animationDuration={animationDuration}>
-      <Picture src={productPicture} animationDuration={animationDuration} />
-      {PriceSection}
-      <Text>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: productDescription.replace(/(<? *script)/gi, 'sscript'),
-          }}
-        />
-      </Text>
-      <CallToActionText>{callingToActionText}</CallToActionText>
-      <BackgroundMedia src={backgroundMedia?.url} />
-    </Container>
+    <ErrorBoundary>
+      <Container color={backgroundColor} animationDuration={animationDuration}>
+        <Picture src={productPicture} animationDuration={animationDuration} />
+        {PriceSection}
+        <Text>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: productDescription.replace(/(<? *script)/gi, 'sscript'),
+            }}
+          />
+        </Text>
+        <CallToActionText>{callingToActionText}</CallToActionText>
+        <BackgroundMedia src={backgroundMedia?.url} />
+      </Container>
+    </ErrorBoundary>
   );
 }
 
@@ -187,7 +203,7 @@ const rotate = keyframes`
 // MARKUP STYLES
 
 // CTA / text
-const Text = styled.section`
+const Text = styled.section<{ animationName: any; }>`
   padding: 8vmin;
   animation-name: ${fadeIn};
   animation-duration: 2s;
@@ -196,8 +212,16 @@ const Text = styled.section`
   animation-timing-function: ease;
   animation-fill-mode: backwards;
 `;
+
+const callToActionTextDelay = 0.5;
 const CallToActionText = styled.span`
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  animation-name: ${fromLeft};
+  animation-duration: ${animationTransitionDuration - callToActionTextDelay};
+  animation-iteration-count: 1;
+  animation-delay: ${callToActionTextDelay}s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
 `;
 
 // Main picture
@@ -213,10 +237,12 @@ const Picture = styled.img<{ src: string; animationDuration: number }>`
   transform: translate(-50%, 0) rotate(1deg);
   filter: drop-shadow(8px 8px 24px rgba(0, 0, 0, 0.24));
   animation-name: ${popIn}, ${rotate}, ${fadeOut};
-  animation-duration: 2s, ${(props) => props.animationDuration - 1.5}, 1s;
+  animation-duration: 2s,
+    ${(props) => props.animationDuration - animationTransitionDuration}, 1s;
   animation-iteration-count: 1, infinite, 1;
   animation-fill-mode: backwards, forwards, forwards;
-  animation-delay: 0s, 1.5s, ${(props) => props.animationDuration - 1.5}s;
+  animation-delay: 0s, ${animationTransitionDuration}s,
+    ${(props) => props.animationDuration - animationTransitionDuration}s;
 `;
 
 // Price
@@ -229,9 +255,9 @@ const PriceContainer = styled.section`
   text-align: left;
   font-weight: bold;
   animation-name: ${fromLeft};
-  animation-duration: 1s;
+  animation-duration: ${animationTransitionDuration - 0.1};
   animation-iteration-count: 1;
-  animation-delay: 0.5s;
+  animation-delay: 0.1s;
   animation-timing-function: ease;
   animation-fill-mode: backwards;
 `;
@@ -261,7 +287,7 @@ const BackgroundMedia = styled.img`
   background: #555;
   object-fit: cover;
   animation-name: ${fromTop};
-  animation-duration: 1.5s;
+  animation-duration: ${animationTransitionDuration}s;
   animation-iteration-count: 1;
   animation-timing-function: ease;
 `;
@@ -284,7 +310,8 @@ const Container = styled.div<{ color?: string; animationDuration: number }>`
   animation-duration: 1s, 0.5s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;
-  animation-delay: 0s, ${(props) => props.animationDuration - 1.5}s;
+  animation-delay: 0s,
+    ${(props) => props.animationDuration - animationTransitionDuration}s;
 `;
 
 export default App;

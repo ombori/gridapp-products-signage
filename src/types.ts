@@ -37,6 +37,7 @@ export type Types = {
     background: Media;
     backgroundColor: string;
     callToAction: string;
+    animationType: 'fade' | 'move';
     animationDuration: number;
   };
 };

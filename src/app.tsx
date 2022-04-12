@@ -25,7 +25,7 @@ const tryGetLocalDescription = (descriptions?: ProductDescription[]) => {
   return descriptions[0].productDescription;
 };
 
-const animationTransitionDuration = 1.5;
+const animationTransitionDuration = 1;
 
 type AnimationT = typeof fadeIn;
 
@@ -42,7 +42,7 @@ function App() {
   const animationDuration =
     animationDurationRaw != null && animationDurationRaw > 2000
       ? animationDurationRaw / 1000
-      : 10;
+      : 5;
 
   const product =
     productSpecification && productSpecification?.products[0]
@@ -106,12 +106,12 @@ function App() {
   } => {
     switch (animationType) {
       case 'fade':
-      default:
         return {
           animationIn: fadeIn,
           animationOut: fadeOut,
         };
       case 'move':
+      default:
         return {
           animationIn: fromLeft,
           animationOut: toRight,
@@ -158,14 +158,14 @@ function App() {
           animationOut={animations.animationOut}
         />
         {PriceSection}
-        <Text animationIn={fromLeft}>
+        <Text animationIn={fromLeftTexts}>
           <div
             dangerouslySetInnerHTML={{
               __html: productDescription.replace(/(<? *script)/gi, 'sscript'),
             }}
           />
         </Text>
-        <CallToActionText>{callingToActionText}</CallToActionText>
+        <CallToActionText animationIn={fromLeftTexts}>{callingToActionText}</CallToActionText>
         <BackgroundMedia src={backgroundMedia?.url} />
       </Container>
     </ErrorBoundary>
@@ -187,10 +187,18 @@ const fromTop = keyframes`
 const fromLeft = keyframes`
   from {
     transform: translate(200%, 0);
-    filter: blur(24px);
   }
   to {
-    filter: blur(0px);
+    transform: translate(0, 0);
+  }
+`;
+
+// From Left for texts
+const fromLeftTexts = keyframes`
+  from {
+    transform: translate(300%, 0);
+  }
+  to {
     transform: translate(0, 0);
   }
 `;
@@ -198,10 +206,8 @@ const fromLeft = keyframes`
 const toRight = keyframes`
   from {
     transform: translate(0, 0);
-    filter: blur(0px);
   }
   to {
-    filter: blur(24px);
     transform: translate(-200%, 0);
   }
 `;
@@ -228,26 +234,26 @@ const fadeOut = keyframes`
 // Pop in
 const popIn = keyframes`
   from {
-    transform: scale(0) translate(-200%, 200%);
+    transform: translate(200%, 0) scale(0);
   }
   to {
-    transform: scale(1) translate(0, 0);
+    transform: translate(0, 0) scale(1);
   }
 `;
 
 // Rotate
 const rotate = keyframes`
   from {
-    transform: translate(-50%,0) rotate(1deg);
+    transform: rotate(0deg);
   }
   30% {
-    transform: translate(-50%,0) rotate(6deg);
+    transform: rotate(4deg);
   }
   80% {
-    transform: translate(-50%,0) rotate(-2deg);
+    transform: rotate(-4deg);
   }
   100% {
-    transform: translate(-50%,0) rotate(0deg);
+    transform: rotate(0deg);
   }
 `;
 
@@ -259,20 +265,21 @@ const Text = styled.section<{ animationIn: AnimationT }>`
   animation-name: ${(props) => props.animationIn};
   animation-duration: 1s;
   animation-iteration-count: 1;
-  animation-delay: 0.5s;
+  animation-delay: 1s;
   animation-timing-function: ease;
   animation-fill-mode: backwards;
+  will-change: transform;
 `;
 
-const callToActionTextDelay = 0.5;
-const CallToActionText = styled.span`
-  margin-bottom: 20px;
-  animation-name: ${fromLeft};
-  animation-duration: ${animationTransitionDuration - callToActionTextDelay};
+const CallToActionText = styled.section<{ animationIn: AnimationT }>`
+  margin-bottom: 10vh;
+  animation-name: ${(props) => props.animationIn};
+  animation-duration: 1s;
   animation-iteration-count: 1;
-  animation-delay: ${callToActionTextDelay}s;
+  animation-delay: ${animationTransitionDuration + 1}s;
   animation-timing-function: ease;
   animation-fill-mode: backwards;
+  will-change: transform;
 `;
 
 // Main picture
@@ -284,22 +291,16 @@ const Picture = styled.img<{
 }>`
   width: auto;
   position: absolute;
+  will-change: transform;
   z-index: 2;
   top: 80px;
-  left: 0;
-  right: 0;
-  height: 50vh;
-  left: 50%;
-  transform: translate(-50%, 0) rotate(1deg);
-  filter: drop-shadow(8px 8px 24px rgba(0, 0, 0, 0.24));
-  animation-name: ${(props) => props.animationIn}, ${rotate},
-    ${(props) => props.animationOut};
+  height: 50vh;  
+  animation-name: ${(props) => props.animationIn}, ${rotate};
   animation-duration: 2s,
-    ${(props) => props.animationDuration - animationTransitionDuration}s, 1s;
-  animation-iteration-count: 1, infinite, 1;
-  animation-fill-mode: backwards, forwards, forwards;
-  animation-delay: 0s, 0s,
     ${(props) => props.animationDuration - animationTransitionDuration}s;
+  animation-iteration-count: 1, 1;
+  animation-fill-mode: forwards, forwards;
+  animation-delay: 0s, ${animationTransitionDuration}s;
 `;
 
 // Price
@@ -311,12 +312,13 @@ const PriceContainer = styled.section`
   margin: 0 auto;
   text-align: left;
   font-weight: bold;
+  transform: translate(200%, 0);
   animation-name: ${fromLeft};
-  animation-duration: ${animationTransitionDuration - 0.1};
+  animation-duration: 1s;
   animation-iteration-count: 1;
-  animation-delay: 0.1s;
+  animation-delay: ${animationTransitionDuration + 1}s;
   animation-timing-function: ease;
-  animation-fill-mode: backwards;
+  animation-fill-mode: forwards;
 `;
 
 const Price = styled.span`
@@ -333,6 +335,7 @@ const PromoPrice = styled(Price)`
 
 // Backgrounds
 const BackgroundMedia = styled.img`
+  will-change: transform;
   z-index: 0;
   width: 100%;
   position: absolute;
@@ -356,6 +359,7 @@ const Container = styled.div<{
   animationOut: AnimationT;
 }>`
   text-align: center;
+  will-change: transform;
   background-color: ${(props) => (props.color ? props.color : '#eee')};
   width: 100vw;
   height: 100vh;
@@ -369,7 +373,7 @@ const Container = styled.div<{
   top: 0;
   left: 0;
   animation-name: ${(props) => props.animationIn}, ${(props) => props.animationOut};
-  animation-duration: 1s, 0.5s;
+  animation-duration: ${animationTransitionDuration}s, ${animationTransitionDuration}s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;
   animation-delay: 0s,

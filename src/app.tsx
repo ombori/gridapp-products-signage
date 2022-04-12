@@ -296,7 +296,7 @@ const Picture = styled.img<{
   top: 80px;
   height: 50vh;  
   animation-name: ${(props) => props.animationIn}, ${rotate};
-  animation-duration: 2s,
+  animation-duration: 1s,
     ${(props) => props.animationDuration - animationTransitionDuration}s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;

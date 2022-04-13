@@ -165,7 +165,9 @@ function App() {
             }}
           />
         </Text>
-        <CallToActionText animationIn={fromLeftTexts}>{callingToActionText}</CallToActionText>
+        <CallToActionText animationIn={fromLeftTexts}>
+          {callingToActionText}
+        </CallToActionText>
         <BackgroundMedia src={backgroundMedia?.url} />
       </Container>
     </ErrorBoundary>
@@ -296,10 +298,10 @@ const Picture = styled.img<{
   top: 80px;
   height: 50vh;  
   animation-name: ${(props) => props.animationIn}, ${rotate};
-  animation-duration: 1s,
+  animation-duration: ${1}s,
     ${(props) => props.animationDuration - animationTransitionDuration}s;
   animation-iteration-count: 1, 1;
-  animation-fill-mode: forwards, forwards;
+  animation-fill-mode: none, none;
   animation-delay: 0s, ${animationTransitionDuration}s;
 `;
 
@@ -312,8 +314,8 @@ const PriceContainer = styled.section`
   margin: 0 auto;
   text-align: left;
   font-weight: bold;
-  transform: translate(200%, 0);
-  animation-name: ${fromLeft};
+  transform: translate(300%, 0);
+  animation-name: ${fromLeftTexts};
   animation-duration: 1s;
   animation-iteration-count: 1;
   animation-delay: ${animationTransitionDuration + 1}s;
@@ -373,7 +375,7 @@ const Container = styled.div<{
   top: 0;
   left: 0;
   animation-name: ${(props) => props.animationIn}, ${(props) => props.animationOut};
-  animation-duration: ${animationTransitionDuration}s, ${animationTransitionDuration}s;
+  animation-duration: ${2}s, ${animationTransitionDuration}s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;
   animation-delay: 0s,

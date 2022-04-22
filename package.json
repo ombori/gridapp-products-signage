@@ -1,6 +1,6 @@
 {
   "name": "myorg.gridapp-products-signage",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "private": true,
   "homepage": "./",
   "scripts": {
@@ -14,7 +14,7 @@
     "upload-description": "omg app upload-description",
     "connect": "omg dev ws",
     "test-publish": "yarn build && omg app publish ombori-test.products-signage",
-    "prod-publish": "yarn prodbuild && omg app publish ombori.products-signage"
+    "prod-publish": "yarn build && omg app publish ombori.products-signage"
   },
   "eslintConfig": {
     "extends": "react-app"

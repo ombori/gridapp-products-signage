@@ -33,6 +33,9 @@ function App() {
   useHeartbeat();
   const settings = useSettings<Settings>();
 
+  const priceContainerBackgroundColor = settings?.app.priceContainerBackgroundColor;
+  const priceContainerTextColor = settings?.app.priceContainerTextColor;
+
   const callingToActionText = settings?.app.callToAction;
   const backgroundMedia = settings?.app.background;
   const backgroundColor = settings?.app.backgroundColor;
@@ -86,7 +89,10 @@ function App() {
   const PriceSection = useMemo(() => {
     if (pricePromo != null) {
       return (
-        <PriceContainer>
+        <PriceContainer
+          priceContainerBackgroundColor={priceContainerBackgroundColor}
+          priceContainerTextColor={priceContainerTextColor}
+        >
           <PromoPrice color="red">{pricePromo}:-</PromoPrice>
           <Price>{priceStandard}:-</Price>
         </PriceContainer>
@@ -96,11 +102,14 @@ function App() {
       return null;
     }
     return (
-      <PriceContainer>
-        <PromoPrice color="red">{priceStandard}:-</PromoPrice>
+      <PriceContainer
+        priceContainerBackgroundColor={priceContainerBackgroundColor}
+        priceContainerTextColor={priceContainerTextColor}
+      >
+        <PromoPrice color={priceContainerTextColor}>{priceStandard}:-</PromoPrice>
       </PriceContainer>
     );
-  }, [pricePromo, priceStandard]);
+  }, [priceContainerBackgroundColor, priceContainerTextColor, pricePromo, priceStandard]);
 
   const animations = useMemo((): {
     animationIn: AnimationT;
@@ -136,9 +145,9 @@ function App() {
   if (!settings) {
     return (
       <Container
-        animationDuration={8000}
-        animationIn={animations.animationIn}
-        animationOut={animations.animationOut}
+        animationDuration={16000}
+        // animationIn={animations.animationIn}
+        // animationOut={animations.animationOut}
       >
         Loading gridapp settings...
       </Container>
@@ -150,8 +159,8 @@ function App() {
       <Container
         color={backgroundColor}
         animationDuration={animationDuration}
-        animationIn={animations.animationIn}
-        animationOut={animations.animationOut}
+        // animationIn={animations.animationIn}
+        // animationOut={animations.animationOut}
       >
         <Picture
           src={productPicture}
@@ -161,16 +170,17 @@ function App() {
         />
         {PriceSection}
         <Text animationIn={fromLeftTexts}>
+          <CallToActionText animationIn={fromLeftTexts}>
+            {callingToActionText}
+          </CallToActionText>
           <div
             dangerouslySetInnerHTML={{
               __html: productDescription.replace(/(<? *script)/gi, 'sscript'),
             }}
           />
         </Text>
-        <CallToActionText animationIn={fromLeftTexts}>
-          {callingToActionText}
-        </CallToActionText>
-        <BackgroundMedia src={backgroundMedia?.url} />
+
+        {/* <BackgroundMedia src={backgroundMedia?.url} /> */}
       </Container>
     </ErrorBoundary>
   );
@@ -191,6 +201,15 @@ const fromTop = keyframes`
 const fromLeft = keyframes`
   from {
     transform: translate(200%, 0);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+`;
+
+const fromRight = keyframes`
+  from {
+    transform: translate(-200%, 0);
   }
   to {
     transform: translate(0, 0);
@@ -261,29 +280,86 @@ const rotate = keyframes`
   }
 `;
 
+// Swing
+const swing = keyframes`
+    0%, 100% {
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+        -webkit-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+    }
+
+    15% {
+        -webkit-transform: translateX(-32px) rotate(-10deg);
+        transform: translateX(-32px) rotate(-10deg);
+    }
+
+    30% {
+        -webkit-transform: translateX(calc(32px / 2)) rotate(10deg);
+        transform: translateX(calc(32px / 2)) rotate(10deg);
+    }
+
+    45% {
+        -webkit-transform: translateX(calc(-32px / 2)) rotate(calc(-10deg / 1.8));
+        transform: translateX(calc(-32px / 2)) rotate(calc(-10deg / 1.8));
+    }
+
+    60% {
+        -webkit-transform: translateX(calc(32px / 3.3)) rotate(calc(10deg / 3));
+        transform: translateX(calc(32px / 3.3)) rotate(calc(10deg / 3));
+    }
+
+    75% {
+        -webkit-transform: translateX(calc(-32px / 5.5)) rotate(calc(-10deg / 5));
+        transform: translateX(calc(-32px / 5.5)) rotate(calc(-10deg / 5));
+    }
+`;
+
+// ZOOM
+const zoom = keyframes`
+  from {
+    transform: scale(1) rotate(0);
+  }
+  to {
+    transform: scale(1.2) rotate(1.5deg);
+  }
+`;
+
 // MARKUP STYLES
 
 // CTA / text
 const Text = styled.section<{ animationIn: AnimationT }>`
-  padding: 8vmin;
-  animation-name: ${(props) => props.animationIn};
+  position: absolute;
+  bottom: 80px;
+  left: 0;
+  max-width: 50vw;
+  background: #fff;
+  z-index: 12;
+  padding: 4vmin;
+  animation-name: ${fromRight};
   animation-duration: 1s;
   animation-iteration-count: 1;
   animation-delay: 1s;
   animation-timing-function: ease;
   animation-fill-mode: backwards;
   will-change: transform;
+  border-radius: 0 80px 0 0;
+
+  h1,
+  h2,
+  h3,
+  p,
+  ul,
+  ol {
+    margin: 0;
+    padding: 8px 0;
+  }
 `;
 
 const CallToActionText = styled.section<{ animationIn: AnimationT }>`
-  margin-bottom: 10vh;
-  animation-name: ${(props) => props.animationIn};
-  animation-duration: 1s;
-  animation-iteration-count: 1;
-  animation-delay: ${animationTransitionDuration + 1}s;
-  animation-timing-function: ease;
-  animation-fill-mode: backwards;
-  will-change: transform;
+  font-size: 120%;
+  font-weight: bold;
+  color: rgba(0, 102, 181, 1);
 `;
 
 // Main picture
@@ -293,36 +369,51 @@ const Picture = styled.img<{
   animationIn: AnimationT;
   animationOut: AnimationT;
 }>`
-  width: auto;
+  width: 100vw;
   position: absolute;
   will-change: transform;
   z-index: 2;
-  top: 80px;
-  height: 50vh;  
-  animation-name: ${(props) => props.animationIn}, ${rotate};
+  top: 0vh;
+  height: 100vh;
+  object-fit: cover;
+  animation-name: ${(props) => props.animationIn}, ${zoom},
+    ${(props) => props.animationOut};
   animation-duration: ${1}s,
+    ${(props) => props.animationDuration - animationTransitionDuration}s,
+    ${animationTransitionDuration}s;
+  animation-iteration-count: 1, 1, 1;
+  animation-fill-mode: none, none, forwards;
+  animation-delay: 0s, 1s,
     ${(props) => props.animationDuration - animationTransitionDuration}s;
-  animation-iteration-count: 1, 1;
-  animation-fill-mode: none, none;
-  animation-delay: 0s, ${animationTransitionDuration}s;
 `;
 
 // Price
-const PriceContainer = styled.section`
+const PriceContainer = styled.section<{
+  priceContainerBackgroundColor?: string;
+  priceContainerTextColor: string;
+  animationDuration: number;
+  animationIn: AnimationT;
+  animationOut: AnimationT;
+}>`
+  position: absolute;
   z-index: 8;
   display: block;
   padding: 40px;
-  background: #fff;
+  background: ${(props) =>
+    props.priceContainerBackgroundColor ? props.priceContainerBackgroundColor : '#eee'};
   margin: 0 auto;
   text-align: left;
   font-weight: bold;
-  transform: translate(300%, 0);
-  animation-name: ${fromLeftTexts};
-  animation-duration: 1s;
-  animation-iteration-count: 1;
-  animation-delay: ${animationTransitionDuration + 1}s;
-  animation-timing-function: ease;
-  animation-fill-mode: forwards;
+  top: 80px;
+  right: 80px;
+  transform-origin: center right;
+  transform: translate(200%, 0);
+  animation-name: ${fromLeft}, ${swing};
+  animation-duration: 0.25s, 1s;
+  animation-delay: 1s, 1.25s;
+  animation-timing-function: ease, ease;
+  animation-fill-mode: forwards, forwards;
+  border-radius: 0 0 0 60px;
 `;
 
 const Price = styled.span`
@@ -346,9 +437,12 @@ const BackgroundMedia = styled.img`
   top: 0;
   left: -25%;
   width: 150%;
-  height: 50vh;
+  height: 12vh;
   border-radius: 0 0 50% 50%;
-  background: #555;
+  background: #eee;
+  /* background: url('https://www.kjell.com/globalassets/productimages/826245_24111_06.tif?ref=CB4EBC88BC&format=jpg&w=960&h=960&mode=pad')
+    50% 50% no-repeat;
+  background-size: cover; */
   object-fit: cover;
   animation-name: ${fromTop};
   animation-duration: ${animationTransitionDuration}s;
@@ -359,16 +453,15 @@ const BackgroundMedia = styled.img`
 const Container = styled.div<{
   color?: string;
   animationDuration: number;
-  animationIn: AnimationT;
-  animationOut: AnimationT;
+  // animationIn: AnimationT;
+  // animationOut: AnimationT;
 }>`
-  text-align: center;
   will-change: transform;
   background-color: ${(props) => (props.color ? props.color : '#eee')};
   width: 100vw;
   height: 100vh;
   display: flex;
-  font-size: calc(16px + 4vmin);
+  font-size: calc(16px + 2vmin);
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
@@ -376,12 +469,12 @@ const Container = styled.div<{
   position: fixed;
   top: 0;
   left: 0;
-  animation-name: ${(props) => props.animationIn}, ${(props) => props.animationOut};
+  /* animation-name: ${(props) => props.animationIn}, ${(props) => props.animationOut};
   animation-duration: ${2}s, ${animationTransitionDuration}s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;
   animation-delay: 0s,
-    ${(props) => props.animationDuration - animationTransitionDuration}s;
+    ${(props) => props.animationDuration - animationTransitionDuration}s; */
 `;
 
 export default App;

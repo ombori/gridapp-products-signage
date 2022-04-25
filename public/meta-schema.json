@@ -10,6 +10,12 @@
     "backgroundColor": {
       "ui:widget": "color"
     },
+    "priceContainerBackgroundColor": {
+      "ui:widget": "color"
+    },
+    "priceContainerTextColor": {
+      "ui:widget": "color"
+    },
     "globalStyles": {
       "ui:widget": "css"
     }

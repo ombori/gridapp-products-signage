@@ -36,6 +36,7 @@
     "@emotion/styled": "^11.8.1",
     "@ombori/ga-messaging": "^2.90.2",
     "@ombori/ga-settings": "^2.170.1",
+    "@ombori/grid-media-processing": "^2.205.0",
     "@ombori/grid-products": "^2.183.0",
     "@ombori/grid-signals-react": "^2.170.1",
     "@testing-library/jest-dom": "^4.2.4",

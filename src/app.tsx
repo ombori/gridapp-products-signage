@@ -7,10 +7,10 @@ import { useHeartbeat } from '@ombori/ga-messaging';
 import { Types as Settings } from './types';
 import { PriceListTypeEnum } from '@ombori/grid-products/dist';
 import { useSettings } from '@ombori/ga-settings/dist';
-import { ProductDescription } from '@ombori/grid-products/src/types/grid-product';
+import { ProductDescription, ProductName } from '@ombori/grid-products/src/types/grid-product';
 import ErrorBoundary from './error-boundary';
 
-const tryGetLocalDescription = (descriptions?: ProductDescription[]) => {
+const tryGetLocalDescription = (descriptions?: ProductName[]) => {
   if (!descriptions || descriptions.length === 0) {
     return '';
   }
@@ -20,21 +20,21 @@ const tryGetLocalDescription = (descriptions?: ProductDescription[]) => {
     return !enDesc;
   });
   if (localDescription) {
-    return localDescription.productDescription;
+    return localDescription.productName;
   }
-  return descriptions[0].productDescription;
+  return descriptions[0].productName;
 };
 
 const animationTransitionDuration = 1;
 
 type AnimationT = typeof fadeIn;
 
-function App() {
+function App({ imgBlob }: { imgBlob: Blob | null }) {
   useHeartbeat();
   const settings = useSettings<Settings>();
 
-  const priceContainerBackgroundColor = settings?.app.priceContainerBackgroundColor;
-  const priceContainerTextColor = settings?.app.priceContainerTextColor;
+  const priceContainerBackgroundColor = settings?.app.priceContainerBackgroundColor || '';
+  const priceContainerTextColor = settings?.app.priceContainerTextColor || '';
 
   const callingToActionText = settings?.app.callToAction;
   const backgroundMedia = settings?.app.background;
@@ -74,7 +74,7 @@ function App() {
     return getProductPictureURL();
   }, [product]);
 
-  const productDescription = tryGetLocalDescription(product?.productDescription);
+  const productDescription = tryGetLocalDescription(product?.productName);
   const priceStandard =
     product &&
     product.productPriceList.find(
@@ -364,6 +364,7 @@ const CallToActionText = styled.section<{ animationIn: AnimationT }>`
   font-size: 120%;
   font-weight: bold;
   color: rgba(0, 102, 181, 1);
+  padding-bottom: 24px;
 `;
 
 // Main picture
@@ -377,9 +378,11 @@ const Picture = styled.img<{
   position: absolute;
   will-change: transform;
   z-index: 2;
-  top: 0vh;
-  height: 100vh;
-  object-fit: cover;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
   animation-name: ${(props) => props.animationIn}, ${zoom},
     ${(props) => props.animationOut};
   animation-duration: ${1}s,
@@ -395,9 +398,9 @@ const Picture = styled.img<{
 const PriceContainer = styled.section<{
   priceContainerBackgroundColor?: string;
   priceContainerTextColor: string;
-  animationDuration: number;
-  animationIn: AnimationT;
-  animationOut: AnimationT;
+  animationDuration?: number;
+  animationIn?: AnimationT;
+  animationOut?: AnimationT;
 }>`
   position: absolute;
   z-index: 8;
@@ -475,7 +478,6 @@ const Container = styled.div<{
   position: fixed;
   top: 0;
   left: 0;
-  /* animation-name: ${(props) => props.animationIn}, ${(props) => props.animationOut};
   animation-duration: ${2}s, ${animationTransitionDuration}s;
   animation-iteration-count: 1, 1;
   animation-fill-mode: forwards, forwards;

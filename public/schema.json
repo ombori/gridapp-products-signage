@@ -36,6 +36,16 @@
             }
           }
         },
+        "priceContainerBackgroundColor": {
+          "type": "string",
+          "title": "Price container background color",
+          "default": "#0000FF"
+        },
+        "priceContainerTextColor": {
+          "type": "string",
+          "title": "Price container text color",
+          "default": "#ffffff"
+        },
         "backgroundColor": {
           "type": "string",
           "title": "Background color",

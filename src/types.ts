@@ -39,5 +39,7 @@ export type Types = {
     callToAction: string;
     animationType: 'fade' | 'move' | 'popin';
     animationDuration: number;
+    priceContainerBackgroundColor: string;
+    priceContainerTextColor: string;
   };
 };

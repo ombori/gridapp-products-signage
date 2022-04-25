@@ -48,26 +48,28 @@ function App() {
     productSpecification && productSpecification?.products[0]
       ? productSpecification?.products[0]
       : null;
-  const pictureInfo = (
-    product ?? { catalogPageLocationProduct: [] }
-  ).catalogPageLocationProduct.find((media) => {
-    return media.catalogType.startsWith('image/');
-  });
 
-  const getProductPictureURL = () => {
-    if (!pictureInfo) {
+  const productPicture = useMemo(() => {
+    const getProductPictureURL = () => {
+      if (!pictureInfo) {
+        return 'no-picture';
+      }
+      if (pictureInfo.url) {
+        return pictureInfo.url;
+      }
+      if (pictureInfo.catalogPageLocationProduct) {
+        return pictureInfo.catalogPageLocationProduct;
+      }
+  
       return 'no-picture';
-    }
-    if (pictureInfo.url) {
-      return pictureInfo.url;
-    }
-    if (pictureInfo.catalogPageLocationProduct) {
-      return pictureInfo.catalogPageLocationProduct;
-    }
-    return 'no-picture';
-  };
+    };
 
-  const productPicture = getProductPictureURL();
+    const pictureInfo = (product?.catalogPageLocationProduct ?? []).find((media) => {
+      return media.catalogType.startsWith('image/');
+    });
+
+    return getProductPictureURL();
+  }, [product]);
 
   const productDescription = tryGetLocalDescription(product?.productDescription);
   const priceStandard =

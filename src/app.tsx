@@ -400,7 +400,9 @@ const PriceContainer = styled.section<{
   display: block;
   padding: 40px;
   background: ${(props) =>
-    props.priceContainerBackgroundColor ? props.priceContainerBackgroundColor : '#eee'};
+    props.priceContainerBackgroundColor
+      ? props.priceContainerBackgroundColor
+      : 'rgba(0, 102, 181, 1)'};
   margin: 0 auto;
   text-align: left;
   font-weight: bold;

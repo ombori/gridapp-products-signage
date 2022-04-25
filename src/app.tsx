@@ -354,6 +354,10 @@ const Text = styled.section<{ animationIn: AnimationT }>`
     margin: 0;
     padding: 8px 0;
   }
+  ul,
+  ol {
+    padding-left: 1.6rem;
+  }
 `;
 
 const CallToActionText = styled.section<{ animationIn: AnimationT }>`

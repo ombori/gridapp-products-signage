@@ -54,6 +54,9 @@ function App({ imgBlob }: { imgBlob: Blob | null }) {
 
   const productPicture = useMemo(() => {
     const getProductPictureURL = () => {
+      if (imgBlob) {
+        return URL.createObjectURL(imgBlob);
+      }
       if (!pictureInfo) {
         return 'no-picture';
       }
@@ -72,7 +75,7 @@ function App({ imgBlob }: { imgBlob: Blob | null }) {
     });
 
     return getProductPictureURL();
-  }, [product]);
+  }, [product, imgBlob]);
 
   const productDescription = tryGetLocalDescription(product?.productName);
   const priceStandard =
@@ -87,7 +90,10 @@ function App({ imgBlob }: { imgBlob: Blob | null }) {
     )?.listPrice;
 
   const PriceSection = useMemo(() => {
-    if (pricePromo != null) {
+    console.log('pricePromo:', pricePromo);
+    console.log('priceStandard:', priceStandard);
+  
+    if (pricePromo != null && pricePromo !== priceStandard) {
       return (
         <PriceContainer
           priceContainerBackgroundColor={priceContainerBackgroundColor}
@@ -335,7 +341,7 @@ const Text = styled.section<{ animationIn: AnimationT }>`
   max-width: 50vw;
   background: #fff;
   z-index: 12;
-  padding: 4vmin;
+  padding: 5vmin 10vmin;
   animation-name: ${fromRight};
   animation-duration: 1s;
   animation-iteration-count: 1;
@@ -361,10 +367,10 @@ const Text = styled.section<{ animationIn: AnimationT }>`
 `;
 
 const CallToActionText = styled.section<{ animationIn: AnimationT }>`
-  font-size: 120%;
+  font-size: 150%;
   font-weight: bold;
   color: rgba(0, 102, 181, 1);
-  padding-bottom: 24px;
+  padding-bottom: 32px;
 `;
 
 // Main picture
@@ -423,6 +429,7 @@ const PriceContainer = styled.section<{
   animation-timing-function: ease, ease;
   animation-fill-mode: forwards, forwards;
   border-radius: 0 0 0 60px;
+  color: ${({ priceContainerTextColor }) => priceContainerTextColor ? priceContainerTextColor : ''};
 `;
 
 const Price = styled.span`

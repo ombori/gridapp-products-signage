@@ -7,7 +7,7 @@ import { useHeartbeat } from '@ombori/ga-messaging';
 import { Types as Settings } from './types';
 import { PriceListTypeEnum } from '@ombori/grid-products/dist';
 import { useSettings } from '@ombori/ga-settings/dist';
-import { ProductDescription, ProductName } from '@ombori/grid-products/src/types/grid-product';
+import { ProductName } from '@ombori/grid-products/src/types/grid-product';
 import ErrorBoundary from './error-boundary';
 
 const tryGetLocalDescription = (descriptions?: ProductName[]) => {
@@ -37,7 +37,6 @@ function App({ imgBlob }: { imgBlob: Blob | null }) {
   const priceContainerTextColor = settings?.app.priceContainerTextColor || '';
 
   const callingToActionText = settings?.app.callToAction;
-  const backgroundMedia = settings?.app.background;
   const backgroundColor = settings?.app.backgroundColor;
   const productSpecification = settings?.app.product;
   const animationDurationRaw = settings?.app.animationDuration;
@@ -193,16 +192,6 @@ function App({ imgBlob }: { imgBlob: Blob | null }) {
 }
 
 // Animations
-// From Top
-const fromTop = keyframes`
-  from {
-    transform: translate(0, -100%);
-  }
-  to {
-    transform: translate(0, 0);
-  }
-`;
-
 // From Left
 const fromLeft = keyframes`
   from {
@@ -267,22 +256,6 @@ const popIn = keyframes`
   }
   to {
     transform: translate(0, 0) scale(1);
-  }
-`;
-
-// Rotate
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  30% {
-    transform: rotate(4deg);
-  }
-  80% {
-    transform: rotate(-4deg);
-  }
-  100% {
-    transform: rotate(0deg);
   }
 `;
 
@@ -442,28 +415,6 @@ const PromoPrice = styled(Price)`
   font-size: calc(16px + 16vmin);
   text-decoration: none;
   color: ${(props) => (props.color ? props.color : '#000')};
-`;
-
-// Backgrounds
-const BackgroundMedia = styled.img`
-  will-change: transform;
-  z-index: 0;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: -25%;
-  width: 150%;
-  height: 12vh;
-  border-radius: 0 0 50% 50%;
-  background: #eee;
-  /* background: url('https://www.kjell.com/globalassets/productimages/826245_24111_06.tif?ref=CB4EBC88BC&format=jpg&w=960&h=960&mode=pad')
-    50% 50% no-repeat;
-  background-size: cover; */
-  object-fit: cover;
-  animation-name: ${fromTop};
-  animation-duration: ${animationTransitionDuration}s;
-  animation-iteration-count: 1;
-  animation-timing-function: ease;
 `;
 
 const Container = styled.div<{
